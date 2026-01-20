@@ -10,6 +10,8 @@ use App\Http\Controllers\MentoreeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -62,6 +64,24 @@ Route::prefix("/v1/mentoree")->controller(MentoreeController::class)->group(func
     Route::post("/register", "register");
     Route::post("/login", "login");
 });
+
+Route::get('/ping', function () {
+    return response()->json([
+        'status' => 'ok',
+        'version' => 'Laravel 12'
+    ]);
+});
+
+
+Route::get('/db-test', function () {
+    DB::connection()->getPdo();
+    return ['db' => 'connected'];
+});
+
+Route::options('/{any}', function () {
+    return response()->json([], 200);
+})->where('any', '.*');
+
 
 /* Route::middleware("auth:api")->prefix("/v1")->controller(UserController::class)->group(function () {
     Route::delete("/admin/logout", "logout");
